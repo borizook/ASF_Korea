@@ -14,7 +14,7 @@ Based on the repository organization, the folders are categorized as follows:
 * **`Model/`**: Core R scripts for simulation and the transmission model.
 * **`candidate_models/`**: Alternative model configurations and baseline evaluations.
 * **`data/`**: Datasets including habitat suitability indices and ASF transmission records. (Access Restricted)
-* **`post_hoc_analysis/`**: Scripts for statistical validation, result interpretation, and generating figures.
+* **`post_hoc_analysis/`**: Scripts for post-hoc analysis
 
 
 
