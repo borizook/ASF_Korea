@@ -5,7 +5,7 @@ This repository contains the official R code and datasets for the study:
 
 This project is archived on Zenodo to ensure long-term accessibility and reproducibility of the research findings.
 
----
+
 
 ## Project Structure
 
@@ -16,7 +16,7 @@ Based on the repository organization, the folders are categorized as follows:
 * **`data/`**: Datasets including habitat suitability indices and ASF transmission records. (Access Restricted)
 * **`post_hoc_analysis/`**: Scripts for statistical validation, result interpretation, and generating figures.
 
----
+
 
 ## Getting Started
 
