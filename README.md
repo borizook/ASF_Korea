@@ -36,4 +36,4 @@ The source code in this repository is licensed under the **MIT License**.
 ### Research Data
 **Copyright (c) 2025 Epidesa. All Rights Reserved.**
 - The data provided in this repository (typically located in the `data/` directory) is for **archival and peer-review/validation purposes only**.
-- <font color="red">**No unauthorized use, reproduction, redistribution, or modification**</font> of the data is permitted without explicit written consent from the author.
+- $\color{red}{\textsf{No unauthorized use, reproduction, redistribution, or modification}}$ of the data is permitted without explicit written consent from the author.
