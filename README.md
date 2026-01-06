@@ -24,11 +24,6 @@ Based on the repository organization, the folders are categorized as follows:
 - **R (version 4.0 or higher)** is required.
 - This project primarily utilizes the **Approximate Bayesian Computation (ABC)** framework.
 
-### Installation & Dependencies
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/](https://github.com/)[Your-GitHub-ID]/[Repository-Name].git
-
 
 ## License
 
