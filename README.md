@@ -7,7 +7,7 @@ This project is archived on Zenodo to ensure long-term accessibility and reprodu
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 Based on the repository organization, the folders are categorized as follows:
 
@@ -18,7 +18,7 @@ Based on the repository organization, the folders are categorized as follows:
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - **R (version 4.0 or higher)** is required.
