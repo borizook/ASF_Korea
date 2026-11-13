@@ -35,7 +35,7 @@ Rscript model_code/Model_A.R
 Alternatively, in R:
 
 ```r
-source("/path/to/github_code/model_code/Model_A.R")
+source("/model_code/Model_A.R")
 ```
 
 The scripts use explicit file paths to access `simulation_function/` and `data/`. Outputs are saved under `results/` in a subdirectory named after the model.
