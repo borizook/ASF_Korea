@@ -13,7 +13,7 @@ Based on the repository organization, the folders are categorized as follows:
 - **`model_code/legacy/`**: Archived model scripts retained for reference.
 - **`simulation_function/`**: Shared R functions for simulation, model initialization, summary statistics, and supporting calculations.
 - **`data/`**: Datasets including habitat suitability indices and ASF transmission records. (Access Restricted)
-- **`results/`**: Model-specific outputs, generated when the scripts are run. This directory is excluded from version control.
+- **`results/`**: Model-specific outputs. Create this directory before running the scripts. This directory is excluded from version control.
 
 ## Getting Started
 
@@ -24,7 +24,9 @@ Based on the repository organization, the folders are categorized as follows:
 
 ### Running a Model
 
-From the repository root, run:
+Before running a model, replace `/path/to/github_code` in the R scripts under `model_code/` and `simulation_function/` with the absolute path to your copy of this repository. Create a `results/` directory in the repository root before running.
+
+Then, from the repository root, run:
 
 ```sh
 Rscript model_code/Model_A.R
@@ -36,7 +38,7 @@ Alternatively, in R:
 source("/path/to/github_code/model_code/Model_A.R")
 ```
 
-The scripts automatically locate the repository root and use the included `simulation_function/` and `data/` directories. Outputs are saved under `results/` in a subdirectory named after the model.
+The scripts use explicit file paths to access `simulation_function/` and `data/`. Outputs are saved under `results/` in a subdirectory named after the model.
 
 ## License
 

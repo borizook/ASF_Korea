@@ -1,30 +1,3 @@
-# Locate the repository from source(), Rscript, or the current directory.
-local({
-  candidates <- character()
-  for (frame in sys.frames()) {
-    if (!is.null(frame$ofile)) candidates <- c(dirname(frame$ofile), candidates)
-  }
-  args <- grep("^--file=", commandArgs(FALSE), value = TRUE)
-  if (length(args)) candidates <- c(candidates, dirname(sub("^--file=", "", args[1])))
-  candidates <- c(candidates, getwd())
-  found <- NULL
-  for (candidate in candidates) {
-    candidate <- normalizePath(candidate, mustWork = FALSE)
-    repeat {
-      if (all(dir.exists(file.path(candidate, c("model_code", "simulation_function", "data"))))) {
-        found <- candidate
-        break
-      }
-      parent <- dirname(candidate)
-      if (identical(parent, candidate)) break
-      candidate <- parent
-    }
-    if (!is.null(found)) break
-  }
-  if (is.null(found)) stop("Cannot locate github_code. Source the script by its file path or run from the repository root.")
-  Sys.setenv(ASF_CODE_ROOT = found)
-  dir.create(file.path(found, "results"), showWarnings = FALSE)
-})
 
 options(bitmapType='cairo')
 library(doParallel)
@@ -53,11 +26,10 @@ nb_simul = 1000 # number of particles
 ###################################################################
 ###################################################################
 
-setwd(file.path(Sys.getenv("ASF_CODE_ROOT"), "results"))
+setwd("/path/to/github_code/results")
 folder_scen = paste0("Model_B7",scen_num)
-source(file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/function_create_wd.R"))
+source("/path/to/github_code/simulation_function/function_create_wd.R")
 create_wd(folder_scen)
-Sys.setenv(ASF_SCENARIO_DIR = scen_folder_wd)
 
 setwd(scen_folder_wd)
 
@@ -82,7 +54,7 @@ if (folder_posterior_points %in% dir(getwd()) == FALSE) {
 # Saving the data needed to initialize the model
 
 
-source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/init_model_wb.R")))
+source(("/path/to/github_code/simulation_function/init_model_wb.R"))
 
 if (!any(list.files(file.path(scen_folder_wd,"/init_data" )) %in% "initdata.Rdata")){
   
@@ -134,10 +106,10 @@ colnames(pars_d) = c("transmission rate",
 model <- function(x){
   # I0 <- c(sample(I0, 1), sample(unitData$unit.id[unitData$county == "Tulcea" & unitData$dp == 0 & unitData$edge == 1], 1))
   
-  source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/cal_sum_stats.sim_ver3_extended.R")))
-  source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/Simulate_model_wb_general.R")))
-  source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/gen.matsum.sim.R")))
-  load(file.path(Sys.getenv("ASF_SCENARIO_DIR"), "init_data", "initdata.Rdata"), .GlobalEnv)
+  source(("/path/to/github_code/simulation_function/cal_sum_stats.sim_ver3_extended.R"))
+  source(("/path/to/github_code/simulation_function/Simulate_model_wb_general.R"))
+  source(("/path/to/github_code/simulation_function/gen.matsum.sim.R"))
+  load("initdata.Rdata", .GlobalEnv)
   
   
   library(tidyverse)
@@ -180,7 +152,7 @@ if (
   
   
   
-  sum.stats.obs = readRDS(file.path(Sys.getenv("ASF_CODE_ROOT"), "data/obs.soi-nobuff.rds"))
+  sum.stats.obs = readRDS("/path/to/github_code/data/obs.soi-nobuff.rds")
   
   # Run APMC parameter estimation -------------------------------------------
   setwd(paste0(file.path(scen_folder_wd,"/init_data" )))
@@ -215,12 +187,12 @@ if (!any(list.files(file.path(scen_folder_wd, folder_posterior_points)) %in% "po
   foreach::getDoParRegistered()
   foreach(i = 1:(nb_simul/2), .combine = rbind, .packages = c("tidyverse") , .export = "scen_folder_wd") %dopar% {
     
-    source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/cal_sum_stats.sim_ver3_extended.R")))
-    source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/Simulate_model_wb_general.R")))
-    source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/gen.matsum.sim.R")))
+    source(("/path/to/github_code/simulation_function/cal_sum_stats.sim_ver3_extended.R"))
+    source(("/path/to/github_code/simulation_function/Simulate_model_wb_general.R"))
+    source(("/path/to/github_code/simulation_function/gen.matsum.sim.R"))
     setwd(paste0(file.path(scen_folder_wd,"/init_data" )))
     
-    load(file.path(Sys.getenv("ASF_SCENARIO_DIR"), "init_data", "initdata.Rdata"), .GlobalEnv)
+    load("initdata.Rdata", .GlobalEnv)
     
     
     library(tidyverse)
@@ -302,7 +274,7 @@ lapply(seq_len(ncol(post_ABC)), FUN = function(i){ post_ABC[,i]}) %>%
   setNames(pars_estimate) -> list_post_ABC
 
 
-source(file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/overlap_area_function.R"))
+source("/path/to/github_code/simulation_function/overlap_area_function.R")
 
 
 
@@ -375,10 +347,10 @@ if (!any(list.files(paste0(scen_folder_wd,"/Trajectories/" )) %in% "simulated_tr
   foreach(i = 1:traj_simul, .combine = rbind, .packages = c("tidyverse"), .export = c("post_ABC")) %dopar% {
     
     
-    source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/cal_sum_stats.sim_ver3_extended.R")))
-    source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/Simulate_model_wb_general_tracked.R")))    
-    source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/gen.matsum.sim.R")))
-    load(file.path(Sys.getenv("ASF_SCENARIO_DIR"), "init_data", "initdata.Rdata"), .GlobalEnv)
+    source(("/path/to/github_code/simulation_function/cal_sum_stats.sim_ver3_extended.R"))
+    source(("/path/to/github_code/simulation_function/Simulate_model_wb_general_tracked.R"))    
+    source(("/path/to/github_code/simulation_function/gen.matsum.sim.R"))
+    load("initdata.Rdata", .GlobalEnv)
     which(colnames(pars_d) %in% pars_estimate) -> pl_estimated
     pars[pl_estimated] = post_ABC[i, seq_along(pars_estimate)]
     
@@ -974,7 +946,7 @@ setwd(scen_folder_wd)
 rm(list=ls()[!ls() %in% c("l_overlap_result","pars_estimate","n_cores" ,"n.cores", "unobserved_day", "end_week","priors", "scen_folder_wd", "pars_d")])
 
 setwd(paste0(file.path(scen_folder_wd,"/init_data" )))
-load(file.path(Sys.getenv("ASF_SCENARIO_DIR"), "init_data", "initdata.Rdata"), .GlobalEnv)
+load("initdata.Rdata", .GlobalEnv)
 
 # Prepare the simulated trajectories using the posterior distributions.
 # list(sim_same_par_traj_reported,sim_same_par_traj_inci, sim_same_par_traj_spatial_reported, sim_same_par_traj_spatial_inci))
@@ -1074,17 +1046,17 @@ mean_cl_quantile_50 <- function(x, q = c(0.25, 0.75), na.rm = TRUE){
 
 
 
-source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/gen.matsum.sim.R")))
+source(("/path/to/github_code/simulation_function/gen.matsum.sim.R"))
 
 
 
 
 
-source((file.path(Sys.getenv("ASF_CODE_ROOT"), "simulation_function/gen.matsum.R")))
+source(("/path/to/github_code/simulation_function/gen.matsum.R"))
 
 
 ## reported time series from fitted data
-sim_same_par_traj_reported = readRDS(file.path(Sys.getenv("ASF_CODE_ROOT"), "data/sim_same_par_traj_reported.rds"))
+sim_same_par_traj_reported = readRDS("/path/to/github_code/data/sim_same_par_traj_reported.rds")
 # Plotting the trajectories that were simulated by using posterior distribution and was used for model fitting.
 
 font <- "Helvetica"
@@ -1482,7 +1454,7 @@ dev.off()
 
 
 
-setwd(file.path(Sys.getenv("ASF_CODE_ROOT"), "data"))
+setwd("/path/to/github_code/data")
 load("plotting_data.Rdata")
 
 
@@ -1529,7 +1501,7 @@ load("plotting_data.Rdata")
   
   
   
-  unit_ID_ob<- readRDS(file.path(Sys.getenv("ASF_CODE_ROOT"), "data/unit_ID_ob.rds"))
+  unit_ID_ob<- readRDS("/path/to/github_code/data/unit_ID_ob.rds")
   
   
   
@@ -1563,7 +1535,7 @@ rbind(sp_agree_ob ) %>% as.data.frame %>% rownames_to_column %>% write_csv("spat
 
 ## For plotting, load hexagon file
 
-hex <- readRDS(file.path(Sys.getenv("ASF_CODE_ROOT"), "data/hexagon.RDS"))
+hex <- readRDS("/path/to/github_code/data/hexagon.RDS")
 library(sf)
 hex %>% st_as_sf ->sf_hex
 
@@ -1903,7 +1875,7 @@ dev.off()
 
 
 
-unit_ID_ob<- readRDS(file.path(Sys.getenv("ASF_CODE_ROOT"), "data/unit_ID_ob.rds"))
+unit_ID_ob<- readRDS("/path/to/github_code/data/unit_ID_ob.rds")
 
 
 
